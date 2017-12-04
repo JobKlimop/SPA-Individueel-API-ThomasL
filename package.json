@@ -13,6 +13,10 @@
     "cors": "^2.8.4",
     "mocha": "^4.0.1",
     "mongoose": "^4.13.5",
-    "nodemon": "^1.12.1"
+    "nodemon": "^1.12.1",
+    "supertest": "^3.0.0"
+  },
+  "devDependencies": {
+    "@angular/cli": "^1.5.5"
   }
 }

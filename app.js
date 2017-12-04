@@ -1,12 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoose = requier('mongoose');
+const mongoose = require('mongoose');
+const routes = require('./routes/routes')
 const app = express();
 
 mongoose.Promise = global.Promise;
 
 if (process.env.NODE_ENV !== 'test') {
-    mongoose.connect('mongodb://localhost/users');
+    mongoose.connect('mongodb://localhost/api');
 }
 
 // CORS headers for local deploy
