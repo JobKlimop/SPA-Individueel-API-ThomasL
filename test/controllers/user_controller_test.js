@@ -18,21 +18,28 @@ describe('User controller', () => {
             .then(() => done());
     });
 
-    it('GET to api/user/Thomas finds the user with the names Thomas', (done) => {
+    it('GET to api/user/Thomas finds the user with the name Thomas', (done) => {
         request(app)
             .get('/api/user/Thomas')
-            .expect(function(res) {
-                res.body.name = 'Thomas';
-            })
-            .expect(200, done)
+            // .expect(function(res) {
+            //     console.log(res.body.username);
+            //     res.body.username === 'Kim';
+            // })
+            .expect(200)
+            .then(response => {
+                console.log(response.body.username);
+                assert(response.body.username, 'Thomas')
+            });
+        done();
     });
 
+
     it('DELETE to api/user/:name can delete a user', (done) => {
-        User.findOneAndRemove({name: 'Thomas'})
-            .then(() => User.findOne({name: 'Thomas'}))
-            .then((user) => {
-            assert(user === null);
-            done()
-            });
-    });
+        console.log('Delete ' + user.username);
+
+        request(app)
+            .delete('/api/user/' + user.username)
+            .expect(204)
+            .end(done);
+    })
 });

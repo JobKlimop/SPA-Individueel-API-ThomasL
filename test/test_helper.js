@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 before(done => {
-    mongoose.connect('mongodb://localhost/api');
+    mongoose.connect('mongodb://localhost/user_test');
     mongoose.connection
         .once('open', () => done())
         .on('error', err => {

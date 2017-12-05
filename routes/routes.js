@@ -3,10 +3,13 @@ const ImageController = require('../controllers/image_controller');
 const CommentController = require('../controllers/comment_controller');
 
 module.exports = (app) => {
-    app.get('/api/user/:id', UserController.getOne);
-    app.post('api/user', UserController.create);
-    app.put('/api/user/:id', UserController.edit);
-    app.delete('api/user/:id', UserController.delete);
+
+    app.get('/api', UserController.greetingTest);
+
+    app.get('/api/user/:username', UserController.getOne);
+    app.post('/api/user', UserController.create);
+    app.put('/api/user/:username', UserController.edit);
+    app.delete('/api/user/:username', UserController.delete);
 
     app.get('/api/images/:id', ImageController.getOne);
     app.get('/api/images/', ImageController.getAll);

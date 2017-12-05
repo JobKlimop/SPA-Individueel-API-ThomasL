@@ -2,18 +2,26 @@ const mongodb = require('../config/mongo.db');
 const User = require('../models/user');
 
 module.exports = {
-    getOne(req, res, next) {
-        var inputName = req.params.name;
 
-        User.findOne({name: inputName})
+    greetingTest(req, res, next) {
+        res.status(200).json({test: 'Test succeeded'});
+    },
+
+    getOne(req, res, error) {
+        const inputName = req.params.username;
+        console.log(inputName);
+
+        User.findOne({username: inputName})
             .then((user) => {
-            res.status(200).send(user);
+                console.log(user);
+                res.status(200).send(user);
             })
-            .catch(next);
+            .catch((error) => res.status(401).json(error));
     },
 
     create(req, res, next) {
-        var body = req.body;
+        let body = req.body;
+        console.log(body);
 
         User.create(body)
             .then(user => {
@@ -22,14 +30,14 @@ module.exports = {
                 console.log(user);
                 res.send(user)
             })
-            .catch(next);
+            // .catch(next);
     },
 
     edit(req, res, next) {
-        var body = req.body;
-        var inputName = req.params.name;
+        let body = req.body;
+        let inputName = req.params.username;
 
-        User.findOneAndUpdate({name: inputName}, body)
+        User.findOneAndUpdate({username: inputName}, body)
             .then(() => {
             res.status(200);
             res.contentType('application/json');
@@ -39,9 +47,9 @@ module.exports = {
     },
 
     delete(req, res, next) {
-        var inputName = req.params.name;
+        let inputName = req.params.username;
 
-        User.findOneAndRemove({name: inputName})
+        User.findOneAndRemove({username: inputName})
             .then(user => {
                 res.status(204).send(user)
             })
