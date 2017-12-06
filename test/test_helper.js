@@ -5,13 +5,15 @@ before(done => {
     mongoose.connection
         .once('open', () => done())
         .on('error', err => {
-            console.warn('Warning: ', error);
+            console.warn('Warning: ', err);
         });
 });
 
 beforeEach(done => {
     const {users} = mongoose.connection.collections;
-    Promise.all([users.drop()])
+    const {images} = mongoose.connection.collections;
+    const {comments} = mongoose.connection.collections;
+    Promise.all([users.drop(), images.drop(), comments.drop()])
         .then(() => done())
         .catch(() => done());
 });

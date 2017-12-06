@@ -11,29 +11,20 @@ const ImageSchema = new Schema({
         required: true,
     },
     description: [{
-        uploadedBy: {
-            type: Schema.Types.ObjectId,
-            ref: 'user'
-        },
         description: String,
         uploadDate: {
             type: Date,
             required: true
         }
     }],
-    likes: [{
-        like: {
-            type: Number,
-            require: true
-        },
-        user: {
-            type: Schema.Types.ObjectId,
-            require: true
-        }
-    }],
+    likes: {
+        type: Number,
+        require: true
+    },
     comments: [{
         type: Schema.Types.ObjectId,
-        ref: 'comment'
+        ref: 'comment',
+        required: false
     }]
 });
 
