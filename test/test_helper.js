@@ -1,7 +1,11 @@
+process.env.NODE_ENV = 'test';
+
 const mongoose = require('mongoose');
+const env = require('../config/env/env');
+var app = require('../app');
 
 before(done => {
-    mongoose.connect('mongodb://localhost/user_test');
+    mongoose.connect(env.dbDatabase);
     mongoose.connection
         .once('open', () => done())
         .on('error', err => {

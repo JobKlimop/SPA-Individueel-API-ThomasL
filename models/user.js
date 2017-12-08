@@ -4,10 +4,10 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 const SALT_WORK_FACTOR = 10;
 
-var emailValidation = function(email){
-    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    return re.test(email)
-};
+// var emailValidation = function(email){
+//     var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+//     return re.test(email)
+// };
 
 const UserSchema = new Schema({
     username: {
@@ -31,9 +31,10 @@ const UserSchema = new Schema({
         type: String,
         lowercase: true,
         unique: true,
-        required: [true, 'Email address is required'],
-        validate: [emailValidation, 'Please use a valid email address'],
-        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+        required: true
+        // required: [true, 'Email address is required'],
+        // validate: [emailValidation, 'Please use a valid email address'],
+        // match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
     password: {
         type: String,

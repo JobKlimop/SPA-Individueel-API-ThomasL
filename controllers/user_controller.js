@@ -7,6 +7,14 @@ module.exports = {
         res.status(200).json({test: 'Test succeeded'});
     },
 
+    getAll(req, res, next) {
+        User.find({})
+            .then((users) => {
+                res.status(200).send(users);
+            })
+            .catch(next);
+    },
+
     getOne(req, res, error) {
         const inputName = req.params.username;
         console.log(inputName);

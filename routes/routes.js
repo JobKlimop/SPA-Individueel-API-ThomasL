@@ -6,8 +6,9 @@ module.exports = (app) => {
 
     app.get('/api', UserController.greetingTest);
 
+    app.get('/api/user/', UserController.getAll);
     app.get('/api/user/:username', UserController.getOne);
-    app.post('/api/user', UserController.create);
+    app.post('/api/user/register', UserController.create);
     app.put('/api/user/:username', UserController.edit);
     app.delete('/api/user/:username', UserController.delete);
 
