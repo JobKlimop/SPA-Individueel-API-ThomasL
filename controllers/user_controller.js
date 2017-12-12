@@ -71,22 +71,23 @@ module.exports = {
             .then(user => {
                 res.status(200);
                 res.contentType('application/json');
-                console.log(user);
+                console.log("Mongo sent: " + user);
                 res.send(user)
             })
             .catch(error => {
                 console.log(error);
             });
 
+
         session
             .run("CREATE (a:User{username:'" + body.username + "'}) " +
                 "SET a += {firstName:'" + body.firstName + "', " +
                 "lastName:'" + body.lastName + "', " +
-                "email:'" + body.email + "', " +
-                "password:'" + body.password + "'}")
+                "email:'" + body.email + "'}")
             .then(result => {
                 res.status(200);
                 res.json(result);
+                console.log("NEO4J SENT: " + JSON.stringify(result));
                 session.close();
             })
             .catch(error => {
