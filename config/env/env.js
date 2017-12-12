@@ -13,5 +13,5 @@ var dburl = process.env.NODE_ENV === 'production' ?
 
 module.exports = {
     env: env,
-    dburl: dburl
+    dburl: dburl,
 };
