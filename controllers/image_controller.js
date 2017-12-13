@@ -58,64 +58,82 @@ module.exports = {
     },
 
     create(req, res, next) {
-        var body = req.body;
-
-        Image.create(body)
-            .then(image => {
-                res.status(200);
-                res.contentType('application/json');
-                res.send(image);
-            })
-            .catch(next);
-
-        session
-            .run("CREATE (a:Image{title:'" + body.title + "'}) " +
-                "SET a += {imageUrl:'" + body.imageUrl + "', " +
-                "description:'" + body.description + "', " +
-                "uploadDate:'" + body.uploadDate + "'}")
-            .then(result => {
-                res.status(200);
-                res.json(result);
-                session.close();
-            })
-            .catch(error => {
-                console.log(error);
+        if(!req.payload._id) {
+            res.status(401).json({
+                "message" : "UnauthorizedError: please log in first"
             });
+        } else {
+            var body = req.body;
+
+            Image.create(body)
+                .then(image => {
+                    res.status(200);
+                    res.contentType('application/json');
+                    res.send(image);
+                })
+                .catch(next);
+
+            session
+                .run("CREATE (a:Image{title:'" + body.title + "'}) " +
+                    "SET a += {imageUrl:'" + body.imageUrl + "', " +
+                    "description:'" + body.description + "', " +
+                    "uploadDate:'" + body.uploadDate + "'}")
+                .then(result => {
+                    res.status(200);
+                    res.json(result);
+                    session.close();
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
     },
 
     edit(req, res, next) {
-        var body = req.body;
-        var imageId = req.params.id;
+        if(!req.payload._id) {
+            res.status(401).json({
+                "message" : "UnauthorizedError: please log in first"
+            });
+        } else {
+            var body = req.body;
+            var imageId = req.params.id;
 
-        Image.findOneAndUpdate({id: imageId})
-            .then(() => {
-                res.status(200);
-                res.contentType('application/json');
-                res.send(body);
-            })
-            .catch(next);
+            Image.findOneAndUpdate({id: imageId})
+                .then(() => {
+                    res.status(200);
+                    res.contentType('application/json');
+                    res.send(body);
+                })
+                .catch(next);
 
-        // TODO: Edit in neo4j
+            // TODO: Edit in neo4j
+        }
     },
 
     delete(req, res, next) {
-        var imageId = req.params.id;
+        if(!req.payload._id) {
+            res.status(401).json({
+                "message" : "UnauthorizedError: please log in first"
+            });
+        } else {
+            var imageId = req.params.id;
 
-        Image.findOneAndRemove({id: imageId})
-            .then(image => {
-                res.status(204).send(image);
-            })
-            .catch(next);
+            Image.findOneAndRemove({id: imageId})
+                .then(image => {
+                    res.status(204).send(image);
+                })
+                .catch(next);
 
-        session
-            .run("MATCH (a:Image{id:'" + imageID + "'}) DETACH DELETE a")
-            .then(result => {
-                res.status(200);
-                res.json(result);
-                session.close();
-            })
-            .catch(error => {
-                console.log(error);
-            })
+            session
+                .run("MATCH (a:Image{id:'" + imageID + "'}) DETACH DELETE a")
+                .then(result => {
+                    res.status(200);
+                    res.json(result);
+                    session.close();
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        }
     }
 };

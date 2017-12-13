@@ -56,59 +56,77 @@ module.exports = {
     },
 
     create(req, res, next) {
-        var body = req.body;
-
-        Comment.create(body)
-            .then(comment => {
-                res.status(200);
-                res.contentType('application/json');
-                res.send(comment);
-            })
-            .catch(next);
-
-        session
-            .run("CREATE (a:Comment{comment:'" + body.comment + "'})")
-            .then(result => {
-                res.status(200);
-                res.json(result);
-                session.close();
-            })
-            .catch(error => {
-                console.log(error);
+        if(!req.payload._id) {
+            res.status(401).json({
+                "message" : "UnauthorizedError: please log in first"
             });
+        } else {
+            var body = req.body;
+
+            Comment.create(body)
+                .then(comment => {
+                    res.status(200);
+                    res.contentType('application/json');
+                    res.send(comment);
+                })
+                .catch(next);
+
+            session
+                .run("CREATE (a:Comment{comment:'" + body.comment + "'})")
+                .then(result => {
+                    res.status(200);
+                    res.json(result);
+                    session.close();
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
     },
 
     edit(req, res, next) {
-        var body = req.body;
-        var commentId = req.params.id;
+        if(!req.payload._id) {
+            res.status(401).json({
+                "message" : "UnauthorizedError: please log in first"
+            });
+        } else {
+            var body = req.body;
+            var commentId = req.params.id;
 
-        Comment.findOneAndUpdate({id: commentId})
-            .then(() => {
-                res.status(200);
-                res.contentType('application/json');
-                res.send(body);
-            })
-            .catch(next);
+            Comment.findOneAndUpdate({id: commentId})
+                .then(() => {
+                    res.status(200);
+                    res.contentType('application/json');
+                    res.send(body);
+                })
+                .catch(next);
+        }
     },
 
     delete(req, res, next) {
-        var commentId = req.params.id;
+        if(!req.payload._id) {
+            res.status(401).json({
+                "message" : "UnauthorizedError: please log in first"
+            });
+        } else {
+            var commentId = req.params.id;
 
-        Comment.findOneAndRemove({id: commentId})
-            .then(comment => {
-                res.status(204).send(comment);
-            })
-            .catch(next);
+            Comment.findOneAndRemove({id: commentId})
+                .then(comment => {
+                    res.status(204).send(comment);
+                })
+                .catch(next);
 
-        session
-            .run("MATCH (a:Comment{id:'" + commentId + "'}) DETACH DELETE a")
-            .then(result => {
-                res.status(200);
-                res.json(result);
-                session.close();
-            })
-            .catch(error => {
-                console.log(error);
-            })
+            session
+                .run("MATCH (a:Comment{id:'" + commentId + "'}) DETACH DELETE a")
+                .then(result => {
+                    res.status(200);
+                    res.json(result);
+                    session.close();
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        }
     }
 };

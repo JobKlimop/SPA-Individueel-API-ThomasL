@@ -45,7 +45,6 @@ module.exports = {
 
         User.findOne({username: inputName})
             .then((user) => {
-                console.log(user);
                 res.status(200).send(user);
             })
             .catch((error) => res.status(401).json(error));
@@ -63,105 +62,49 @@ module.exports = {
             });
     },
 
-    create(req, res, next) {
-        let body = req.body;
-        console.log(body);
-
-        User.create(body)
-            .then(user => {
-                res.status(200);
-                res.contentType('application/json');
-                console.log("Mongo sent: " + user);
-                res.send(user)
-            })
-            .catch(error => {
-                console.log(error);
-            });
-
-
-        session
-            .run("CREATE (a:User{username:'" + body.username + "'}) " +
-                "SET a += {firstName:'" + body.firstName + "', " +
-                "lastName:'" + body.lastName + "', " +
-                "email:'" + body.email + "'}")
-            .then(result => {
-                res.status(200);
-                res.json(result);
-                console.log("NEO4J SENT: " + JSON.stringify(result));
-                session.close();
-            })
-            .catch(error => {
-                console.log(error);
-            });
-
-        // TODO: Create a security for no duplicate users in Neo4J
-        // session
-        //     .run("MATCH (a:User{username:'" + body.username + "'}) RETURN a")
-        //     .then(result => {
-        //         console.log("RESULT: " + JSON.stringify(result));
-        //         var resultArr = [];
-        //
-        //         result.records.forEach(record => {
-        //             resultArr.push({
-        //                 resultconsumedafter: record.summary.resultConsumedAfter.low
-        //             });
-        //             console.log("RESULTARR: " + JSON.stringify(resultArr));
-        //         });
-        //         if(resultArr.resultconsumedafter > 0){
-        //             res.status(400);
-        //             res.json('User already exists');
-        //             session.close();
-        //         } else {
-        //             session
-        //                 .run("CREATE (a:User{username:'" + body.username + "'}) " +
-        //                     "SET a += {firstName:'" + body.firstName + "', " +
-        //                     "lastName:'" + body.lastName + "', " +
-        //                     "email:'" + body.email + "', " +
-        //                     "password:'" + body.password + "'}")
-        //                 .then(result => {
-        //                     res.status(200);
-        //                     res.json(result);
-        //                     session.close();
-        //                 })
-        //                 .catch(error => {
-        //                     console.log(error);
-        //                 })
-        //
-        //         }
-        //     });
-    },
-
     edit(req, res, next) {
-        let body = req.body;
-        let inputName = req.params.username;
+        if(!req.payload._id) {
+            res.status(401).json({
+                "message" : "UnauthorizedError: not authorized for this account"
+            });
+        } else {
+            let body = req.body;
+            let inputName = req.params.username;
 
-        User.findOneAndUpdate({username: inputName}, body)
-            .then(() => {
-            res.status(200);
-            res.contentType('application/json');
-            res.send(body);
-            })
-            .catch(next);
+            User.findOneAndUpdate({username: inputName}, body)
+                .then(() => {
+                    res.status(200);
+                    res.contentType('application/json');
+                    res.send(body);
+                })
+                .catch(next);
+        }
     },
 
     delete(req, res, next) {
-        let inputName = req.params.username;
+        if(!req.payload._id) {
+            res.status(401).json({
+                "message" : "UnauthorizedError: not authorized for this account"
+            });
+        } else {
+            let inputName = req.params.username;
 
-        User.findOneAndRemove({username: inputName})
-            .then(user => {
-                res.status(204).send(user)
-            })
-            .catch(next);
+            User.findOneAndRemove({username: inputName})
+                .then(user => {
+                    res.status(204).send(user)
+                })
+                .catch(next);
 
-        session
-            .run("MATCH (a:User{username:'" + inputName + "'}) DETACH DELETE a")
-            .then(result => {
-                res.status(200);
-                res.json(result);
-                session.close();
-            })
-            .catch(error => {
-                console.log(error);
-            })
+            session
+                .run("MATCH (a:User{username:'" + inputName + "'}) DETACH DELETE a")
+                .then(result => {
+                    res.status(200);
+                    res.json(result);
+                    session.close();
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        }
     }
 };

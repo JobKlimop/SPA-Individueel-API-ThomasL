@@ -2,6 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const routes = require('./routes/routes');
+const passport = require('passport');
+
+require('./config/passport');
 
 const app = express();
 
@@ -14,6 +17,13 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 app.use(bodyParser.json());
+
+app.all('*', function(req, res, next){
+    let token = (req.header('X-Access-Token')) || '';
+    console.log(token);
+    next();
+});
+
 
 // CORS headers for local deploy
 app.use(function (req, res, next) {
@@ -30,9 +40,14 @@ app.use(function (req, res, next) {
     next();
 });
 
+app.use(passport.initialize());
 routes(app);
 
 app.use((err, req, res, next) => {
+    if(err.name === 'UnauthorizedError') {
+        res.status(401);
+        res.json({"message" : err.name+ ": " + err.message});
+    }
     res.status(422).send({error: err.message});
 });
 
