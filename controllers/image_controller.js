@@ -1,6 +1,7 @@
 const mongodb = require('../config/mongo.db');
 const Image = require('../models/image');
 const neo4j = require('neo4j-driver').v1;
+const User = require('../models/user');
 
 var driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'neo4j'));
 var session = driver.session();
@@ -58,15 +59,21 @@ module.exports = {
     },
 
     create(req, res, next) {
-        if(!req.payload._id) {
-            res.status(401).json({
-                "message" : "UnauthorizedError: please log in first"
-            });
-        } else {
+        // if(!req.payload._id) {
+        //     res.status(401).json({
+        //         "message" : "UnauthorizedError: please log in first"
+        //     });
+        // } else {
             var body = req.body;
+            var inputName = req.params.username;
 
             Image.create(body)
                 .then(image => {
+                    User.findOne({username: inputName})
+                        .then(user => {
+                            user.images.push(image);
+                            user.save();
+                        });
                     res.status(200);
                     res.contentType('application/json');
                     res.send(image);
@@ -86,7 +93,6 @@ module.exports = {
                 .catch(error => {
                     console.log(error);
                 });
-        }
     },
 
     edit(req, res, next) {

@@ -63,11 +63,11 @@ module.exports = {
     },
 
     edit(req, res, next) {
-        if(!req.payload._id) {
-            res.status(401).json({
-                "message" : "UnauthorizedError: not authorized for this account"
-            });
-        } else {
+        // if(!req.payload._id) {
+        //     res.status(401).json({
+        //         "message" : "UnauthorizedError: not authorized for this account"
+        //     });
+        // } else {
             let body = req.body;
             let inputName = req.params.username;
 
@@ -78,7 +78,7 @@ module.exports = {
                     res.send(body);
                 })
                 .catch(next);
-        }
+        // }
     },
 
     delete(req, res, next) {

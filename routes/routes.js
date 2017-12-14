@@ -20,13 +20,13 @@ module.exports = (app) => {
     //Accountrelated
     app.get('/api/user/', UserController.getAll);
     app.get('/api/user/:username', auth, UserController.getOne);
-    app.put('/api/user/:username', auth, UserController.edit);
+    app.put('/api/user/:username', UserController.edit);
     app.delete('/api/user/:username', auth, UserController.delete);
 
     //Images
-    app.get('/api/images/:id', ImageController.getOne);
+    app.get('/api/images/:title', ImageController.getOne);
     app.get('/api/images/', ImageController.getAll);
-    app.post('/api/images', auth, ImageController.create);
+    app.post('/api/images/:username', ImageController.create);
     app.put('/api/images/:id', auth, ImageController.edit);
     app.delete('/api/images/:id', auth, ImageController.delete);
 
