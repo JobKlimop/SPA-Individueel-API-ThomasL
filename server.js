@@ -3,6 +3,7 @@ var cors = require('cors');
 var bodyParser = require('body-parser');
 var config = require('./config/env/env');
 var routes = require('./routes/routes');
+var mongoose = require('mongoose');
 
 var app = express();
 
@@ -18,7 +19,7 @@ app.set('port', (process.env.PORT || config.env.webPort));
 app.set('env', (process.env.ENV || 'development'));
 
 // app.use(cors());
-//TODO: Change to app.use(cors());
+// TODO: Change to app.use(cors());
 // CORS headers
 // CROSS ORIGIN RESOURCE FORGERY
 app.use(function (req, res, next) {
