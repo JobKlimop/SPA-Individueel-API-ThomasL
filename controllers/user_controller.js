@@ -2,7 +2,7 @@ const mongodb = require('../config/mongo.db');
 const User = require('../models/user');
 const neo4j = require('neo4j-driver').v1;
 
-var driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'neo4j'));
+var driver = neo4j.driver('bolt://hobby-jelgiahodeihgbkepmboijal.dbs.graphenedb.com:24786', neo4j.auth.basic('user', 'b.4hfYnarQ8VoK.54A0Rr4DN5JDRLmj'));
 var session = driver.session();
 
 module.exports = {
