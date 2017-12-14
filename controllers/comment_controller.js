@@ -1,6 +1,7 @@
 const mongodb = require('../config/mongo.db');
 const Comment = require('../models/comment');
 const neo4j = require('neo4j-driver').v1;
+const Image = require('../models/comment');
 
 var driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'neo4j'));
 var session = driver.session();
@@ -56,32 +57,41 @@ module.exports = {
     },
 
     create(req, res, next) {
-        if(!req.payload._id) {
-            res.status(401).json({
-                "message" : "UnauthorizedError: please log in first"
-            });
-        } else {
+        // if(!req.payload._id) {
+        //     res.status(401).json({
+        //         "message" : "UnauthorizedError: please log in first"
+        //     });
+        // } else {
             var body = req.body;
+            var id = req.params.id;
+
+            console.log(id);
 
             Comment.create(body)
                 .then(comment => {
+                    Image.findOne({id: id})
+                        .then(image => {
+                            console.log(JSON.stringify(image));
+                            image.comment.push(comment);
+                            image.save();
+                        });
                     res.status(200);
                     res.contentType('application/json');
                     res.send(comment);
                 })
                 .catch(next);
 
-            session
-                .run("CREATE (a:Comment{comment:'" + body.comment + "'})")
-                .then(result => {
-                    res.status(200);
-                    res.json(result);
-                    session.close();
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        }
+            // session
+            //     .run("CREATE (a:Comment{comment:'" + body.comment + "'})")
+            //     .then(result => {
+            //         res.status(200);
+            //         res.json(result);
+            //         session.close();
+            //     })
+            //     .catch(error => {
+            //         console.log(error);
+            //     });
+        // }
     },
 
     edit(req, res, next) {

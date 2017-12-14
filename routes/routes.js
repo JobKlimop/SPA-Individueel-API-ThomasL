@@ -19,7 +19,7 @@ module.exports = (app) => {
 
     //Accountrelated
     app.get('/api/user/', UserController.getAll);
-    app.get('/api/user/:username', auth, UserController.getOne);
+    app.get('/api/user/:username', UserController.getOne);
     app.put('/api/user/:username', UserController.edit);
     app.delete('/api/user/:username', auth, UserController.delete);
 
@@ -33,7 +33,7 @@ module.exports = (app) => {
     //Comments
     app.get('/api/comments/:id', CommentController.getOne);
     app.get('/api/comments', CommentController.getAll);
-    app.post('/api/comments', auth, CommentController.create);
+    app.post('/api/comments/:id', CommentController.create);
     app.put('/api/comments/:id', auth, CommentController.edit);
     app.delete('/api/comments/:id', auth, CommentController.delete);
 };
