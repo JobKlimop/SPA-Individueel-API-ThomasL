@@ -48,7 +48,7 @@ describe('User controller', () => {
     it('POST to api/user creates a user', (done) => {
         User.count().then(count => {
             request(app)
-                .post('/api/user')
+                .post('/api/user/register')
                 .send(testUser)
                 .end(response => {
                     User.count().then(newCount => {
@@ -72,14 +72,5 @@ describe('User controller', () => {
                         done();
                     })
             })
-    });
-
-    it('DELETE to api/user/:name can delete a user', (done) => {
-        console.log('Delete ' + testUser.username);
-
-        request(app)
-            .delete('/api/user/' + testUser.username)
-            .expect(204)
-            .end(done);
     });
 });

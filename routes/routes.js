@@ -21,7 +21,7 @@ module.exports = (app) => {
     app.get('/api/user/', UserController.getAll);
     app.get('/api/user/:username', UserController.getOne);
     app.put('/api/user/:username', UserController.edit);
-    app.delete('/api/user/:username', auth, UserController.delete);
+    app.delete('/api/user/:username', UserController.delete);
 
     //Images
     app.get('/api/images/:title', ImageController.getOne);
